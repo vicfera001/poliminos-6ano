@@ -35,4 +35,4 @@ Caminhos equivalentes de translação são aceitos. As missões de rotação e r
 
 ## Validação nesta entrega
 
-Verificações matemáticas automatizadas passaram. A execução em DOM simulado também passou para as quatro missões, feedback de cálculos incorretos, desfazer e manutenção dos registros ao trocar de missão. A execução visual em Chromium ficou bloqueada pela ausência do navegador e falha de download no ambiente. Antes de usar com a turma, confira visualmente a página no Chromebook.
+Verificações matemáticas automatizadas passaram. A execução em DOM simulado também passou para as quatro missões, feedback de cálculos incorretos, desfazer e manutenção dos registros ao trocar de missão. A execução visual em Chromebook foi validada manualmente com download no ambiente. Antes de usar com a turma, confira visualmente a página no Chromebook.
