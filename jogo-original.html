@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2D Geometry Math Workbench - Side Controls</title>
+    <style>
+        :root {
+            --bg-color: #0b132b;
+            --panel-bg: #1c2541;
+            --accent-cyan: #48cae4;
+            --accent-pink: #f72585;
+            --accent-yellow: #ffee32;
+            --accent-green: #52b788;
+            --text-color: #edf2f4;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Compact Header */
+        header {
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            background: var(--panel-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-titles h1 {
+            font-size: 1rem;
+            color: var(--accent-cyan);
+            letter-spacing: 0.5px;
+        }
+
+        .header-titles p {
+            font-size: 0.65rem;
+            color: #8d99ae;
+        }
+
+        .btn-download {
+            background: var(--accent-green);
+            color: #000;
+            font-weight: bold;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.7rem;
+        }
+
+        /* Main Workspace: Side Controls Flanking Canvas */
+        .workspace {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px;
+            gap: 8px;
+            overflow: hidden;
+            height: calc(100vh - 45px);
+        }
+
+        /* Flanking Touch Pads */
+        .side-pad {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 80px;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .touch-btn {
+            flex: 1;
+            max-height: 80px;
+            background: var(--panel-bg);
+            border: 1px solid #3a506b;
+            color: var(--text-color);
+            font-size: 0.75rem;
+            font-family: inherit;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .touch-btn:active {
+            background: var(--accent-cyan);
+            color: #000;
+        }
+
+        .touch-btn.reflect-btn {
+            border-color: var(--accent-pink);
+            color: var(--accent-pink);
+        }
+
+        .touch-btn.drop-btn {
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        /* Canvas Container Maximized */
+        .canvas-container {
+            height: 100%;
+            aspect-ratio: 1 / 2;
+            background: #030712;
+            padding: 2px;
+            border-radius: 6px;
+            border: 2px solid #3a506b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-color: #02050e;
+        }
+
+        /* Settings & Info Panel */
+        .info-panel {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 180px;
+            justify-content: flex-start;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 6px 8px;
+        }
+
+        .card h2 {
+            font-size: 0.65rem;
+            color: var(--accent-yellow);
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 2px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 2px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            background: #0b132b;
+            color: var(--text-color);
+            border: 1px solid #3a506b;
+            padding: 4px 0;
+            font-family: inherit;
+            font-size: 0.65rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .toggle-btn.active {
+            background: var(--accent-cyan);
+            color: #000;
+            font-weight: bold;
+            border-color: var(--accent-cyan);
+        }
+
+        .transform-hud p {
+            font-size: 0.65rem;
+            margin: 2px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .transform-hud span {
+            color: var(--accent-cyan);
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .info-panel {
+                width: 120px;
+            }
+            .side-pad {
+                width: 60px;
+            }
+            .touch-btn {
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-titles">
+            <h1>2D GEOMETRY WORKBENCH</h1>
+            <p>BNCC EF06MA23: Polyomino Transformations</p>
+        </div>
+        <button id="downloadBtn" class="btn-download">💾 Save HTML</button>
+    </header>
+
+    <div class="workspace">
+        
+        <!-- Left Side Movement Pad -->
+        <div class="side-pad">
+            <button class="touch-btn" id="mLeft">◀<br>LEFT</button>
+            <button class="touch-btn" id="mRight">▶<br>RIGHT</button>
+            <button class="touch-btn" id="mDown">▼<br>DOWN</button>
+        </div>
+
+        <!-- Center Maximized Board -->
+        <div class="canvas-container">
+            <canvas id="stage"></canvas>
+        </div>
+
+        <!-- Right Side Transformation Pad -->
+        <div class="side-pad">
+            <button class="touch-btn" id="mRotate">↻<br>ROTATE</button>
+            <button class="touch-btn reflect-btn" id="mReflect">↔<br>MIRROR</button>
+            <button class="touch-btn drop-btn" id="mDrop">⤓<br>DROP</button>
+        </div>
+
+        <!-- Control HUD & Modes Panel -->
+        <div class="info-panel">
+            <div class="card">
+                <h2>Set</h2>
+                <div class="toggle-group">
+                    <button id="modeTetra" class="toggle-btn active">Tetra</button>
+                    <button id="modePenta" class="toggle-btn">Penta</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Mode</h2>
+                <div class="toggle-group">
+                    <button id="modeFree" class="toggle-btn active">Free</button>
+                    <button id="modeTurn" class="toggle-btn">Step</button>
+                </div>
+            </div>
+
+            <div class="card transform-hud">
+                <h2>Vector Log</h2>
+                <p>Vector: <span id="hudVector">(0,0)</span></p>
+                <p>Rot: <span id="hudRotation">0°</span></p>
+                <p>Flip: <span id="hudReflection">Norm</span></p>
+            </div>
+
+            <div class="card transform-hud">
+                <h2>Metrics</h2>
+                <p>Score: <span id="hudScore">0</span></p>
+                <p>Lines: <span id="hudLines">0</span></p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('stage');
+        const ctx = canvas.getContext('2d');
+
+        const COLS = 10;
+        const ROWS = 20;
+
+        const COLORS = [
+            null,
+            '#00f5d4', '#3a86ff', '#ff006e', '#ffee32', 
+            '#8ac926', '#ff5400', '#7209b7', '#4cc9f0', '#f15bb5'
+        ];
+
+        const TETRAMINOS = {
+            I: [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+            J: [[2,0,0],[2,2,2],[0,0,0]],
+            L: [[0,0,3],[3,3,3],[0,0,0]],
+            O: [[4,4],[4,4]],
+            S: [[0,5,5],[5,5,0],[0,0,0]],
+            T: [[0,6,0],[6,6,6],[0,0,0]],
+            Z: [[7,7,0],[0,7,7],[0,0,0]]
+        };
+
+        const PENTAMINOS = {
+            F: [[0,1,1],[1,1,0],[0,1,0]],
+            I: [[0,0,2,0,0],[0,0,2,0,0],[0,0,2,0,0],[0,0,2,0,0],[0,0,2,0,0]],
+            L: [[0,3,0,0],[0,3,0,0],[0,3,0,0],[0,3,3,0]],
+            P: [[0,4,4],[0,4,4],[0,4,0]],
+            N: [[0,0,5,0],[0,5,5,0],[0,5,0,0],[0,5,0,0]],
+            T: [[6,6,6],[0,6,0],[0,6,0]],
+            U: [[7,0,7],[7,7,7],[0,0,0]],
+            V: [[8,0,0],[8,0,0],[8,8,8]],
+            W: [[9,0,0],[9,9,0],[0,9,9]],
+            X: [[0,1,0],[1,1,1],[0,1,0]],
+            Y: [[0,2,0,0],[2,2,2,2],[0,0,0,0]],
+            Z: [[3,3,0],[0,3,0],[0,3,3]]
+        };
+
+        let currentPieceSet = TETRAMINOS;
+        let board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+
+        let activePiece = null;
+        let activePos = { x: 0, y: 0 };
+        let rotationAngle = 0;
+        let isReflected = false;
+
+        let isTurnBased = false;
+        let dropCounter = 0;
+        let dropInterval = 1000;
+        let lastTime = 0;
+
+        let score = 0;
+        let lines = 0;
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const rect = container.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function resetPiece() {
+            const keys = Object.keys(currentPieceSet);
+            const randKey = keys[Math.floor(Math.random() * keys.length)];
+            activePiece = currentPieceSet[randKey].map(row => [...row]);
+            
+            activePos.x = Math.floor((COLS - activePiece[0].length) / 2);
+            activePos.y = 0;
+
+            rotationAngle = 0;
+            isReflected = false;
+            updateHUD();
+
+            if (checkCollision(activePiece, activePos)) {
+                board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+                score = 0;
+                lines = 0;
+                alert("Grid Full! Resetting workbench.");
+            }
+        }
+
+        function checkCollision(piece, pos) {
+            for (let r = 0; r < piece.length; r++) {
+                for (let c = 0; c < piece[r].length; c++) {
+                    if (piece[r][c] !== 0) {
+                        let newX = pos.x + c;
+                        let newY = pos.y + r;
+                        if (newX < 0 || newX >= COLS || newY >= ROWS) return true;
+                        if (newY >= 0 && board[newY][newX] !== 0) return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function rotateMatrix(matrix) {
+            const N = matrix.length;
+            const M = matrix[0].length;
+            let result = Array.from({ length: M }, () => Array(N).fill(0));
+            for (let r = 0; r < N; r++) {
+                for (let c = 0; c < M; c++) {
+                    result[c][N - 1 - r] = matrix[r][c];
+                }
+            }
+            return result;
+        }
+
+        function reflectMatrix(matrix) {
+            return matrix.map(row => [...row].reverse());
+        }
+
+        function playerRotate() {
+            const rotated = rotateMatrix(activePiece);
+            if (!checkCollision(rotated, activePos)) {
+                activePiece = rotated;
+                rotationAngle = (rotationAngle + 90) % 360;
+                updateHUD();
+            }
+        }
+
+        function playerReflect() {
+            const reflected = reflectMatrix(activePiece);
+            if (!checkCollision(reflected, activePos)) {
+                activePiece = reflected;
+                isReflected = !isReflected;
+                updateHUD();
+            }
+        }
+
+        function playerMove(dir) {
+            activePos.x += dir;
+            if (checkCollision(activePiece, activePos)) {
+                activePos.x -= dir;
+            } else {
+                updateHUD();
+            }
+        }
+
+        function playerDrop() {
+            activePos.y++;
+            if (checkCollision(activePiece, activePos)) {
+                activePos.y--;
+                lockPiece();
+            } else {
+                updateHUD();
+            }
+            dropCounter = 0;
+        }
+
+        function playerHardDrop() {
+            while (!checkCollision(activePiece, activePos)) {
+                activePos.y++;
+            }
+            activePos.y--;
+            lockPiece();
+            dropCounter = 0;
+        }
+
+        function lockPiece() {
+            for (let r = 0; r < activePiece.length; r++) {
+                for (let c = 0; c < activePiece[r].length; c++) {
+                    if (activePiece[r][c] !== 0) {
+                        board[activePos.y + r][activePos.x + c] = activePiece[r][c];
+                    }
+                }
+            }
+            clearLines();
+            resetPiece();
+        }
+
+        function clearLines() {
+            let cleared = 0;
+            for (let r = ROWS - 1; r >= 0; r--) {
+                if (board[r].every(val => val !== 0)) {
+                    board.splice(r, 1);
+                    board.unshift(Array(COLS).fill(0));
+                    cleared++;
+                    r++;
+                }
+            }
+            if (cleared > 0) {
+                lines += cleared;
+                score += cleared * 100;
+                document.getElementById('hudScore').innerText = score;
+                document.getElementById('hudLines').innerText = lines;
+            }
+        }
+
+        function updateHUD() {
+            document.getElementById('hudVector').innerText = `(${activePos.x},${activePos.y})`;
+            document.getElementById('hudRotation').innerText = `${rotationAngle}°`;
+            document.getElementById('hudReflection').innerText = isReflected ? 'Refl' : 'Norm';
+        }
+
+        function draw() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            const bw = rect.width / COLS;
+            const bh = rect.height / ROWS;
+
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            // Mesh Lines
+            ctx.strokeStyle = '#1c2d42';
+            ctx.lineWidth = 1;
+            for (let r = 0; r <= ROWS; r++) {
+                ctx.beginPath();
+                ctx.moveTo(0, r * bh);
+                ctx.lineTo(rect.width, r * bh);
+                ctx.stroke();
+            }
+            for (let c = 0; c <= COLS; c++) {
+                ctx.beginPath();
+                ctx.moveTo(c * bw, 0);
+                ctx.lineTo(c * bw, rect.height);
+                ctx.stroke();
+            }
+
+            // Board Blocks
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (board[r][c] !== 0) {
+                        drawBlock(c, r, bw, bh, COLORS[board[r][c]]);
+                    }
+                }
+            }
+
+            // Active Piece
+            if (activePiece) {
+                for (let r = 0; r < activePiece.length; r++) {
+                    for (let c = 0; c < activePiece[r].length; c++) {
+                        if (activePiece[r][c] !== 0) {
+                            drawBlock(activePos.x + c, activePos.y + r, bw, bh, COLORS[activePiece[r][c]], true);
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawBlock(x, y, bw, bh, color, isActive = false) {
+            const px = x * bw;
+            const py = y * bh;
+
+            ctx.fillStyle = color;
+            ctx.fillRect(px + 1, py + 1, bw - 2, bh - 2);
+
+            ctx.strokeStyle = isActive ? '#ffffff' : '#000000';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(px + 2, py + 2, bw - 4, bh - 4);
+        }
+
+        function update(time = 0) {
+            const deltaTime = time - lastTime;
+            lastTime = time;
+
+            if (!isTurnBased) {
+                dropCounter += deltaTime;
+                if (dropCounter > dropInterval) {
+                    playerDrop();
+                }
+            }
+
+            draw();
+            requestAnimationFrame(update);
+        }
+
+        window.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') playerMove(-1);
+            if (e.key === 'ArrowRight') playerMove(1);
+            if (e.key === 'ArrowDown') playerDrop();
+            if (e.key === 'ArrowUp' || e.key.toLowerCase() === 'x') playerRotate();
+            if (e.key.toLowerCase() === 'f') playerReflect();
+            if (e.key === ' ') playerHardDrop();
+        });
+
+        document.getElementById('modeTetra').onclick = function() {
+            currentPieceSet = TETRAMINOS;
+            this.classList.add('active');
+            document.getElementById('modePenta').classList.remove('active');
+            resetPiece();
+        };
+
+        document.getElementById('modePenta').onclick = function() {
+            currentPieceSet = PENTAMINOS;
+            this.classList.add('active');
+            document.getElementById('modeTetra').classList.remove('active');
+            resetPiece();
+        };
+
+        document.getElementById('modeFree').onclick = function() {
+            isTurnBased = false;
+            this.classList.add('active');
+            document.getElementById('modeTurn').classList.remove('active');
+        };
+
+        document.getElementById('modeTurn').onclick = function() {
+            isTurnBased = true;
+            this.classList.add('active');
+            document.getElementById('modeFree').classList.remove('active');
+        };
+
+        document.getElementById('mLeft').onclick = () => playerMove(-1);
+        document.getElementById('mRight').onclick = () => playerMove(1);
+        document.getElementById('mRotate').onclick = playerRotate;
+        document.getElementById('mReflect').onclick = playerReflect;
+        document.getElementById('mDown').onclick = playerDrop;
+        document.getElementById('mDrop').onclick = playerHardDrop;
+
+        document.getElementById('downloadBtn').onclick = function() {
+            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = '2D_Geometry_Workbench.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+
+        resizeCanvas();
+        resetPiece();
+        update();
+    </script>
+</body>
+</html>
