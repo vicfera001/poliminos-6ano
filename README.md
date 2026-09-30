@@ -1,4 +1,4 @@
-# Missão Poliminós — 6º ano
+# Missão Poliminós: 6º ano
 
 Proposta didática do Prof. Me. Victor Ferauche. Adaptação digital preparada a partir do HTML e do material de aula fornecidos pelo professor.
 
@@ -7,7 +7,7 @@ Abra `index.html` no navegador. Funciona sem instalação e sem acesso à intern
 
 O aplicativo é uma adaptação das instruções do material impresso: não reproduz sua planta, suas imagens ou a posição dos três móveis juntos. O centro P é definido explicitamente na malha digital. O desafio de reflexão amplia a proposta. Use a folha original para discutir paredes, porta, janela e sobreposição de móveis.
 
-## Roteiro de aula sugerido — 2 aulas de 50 minutos
+## Roteiro de aula sugerido: 2 aulas de 50 minutos
 
 1. **Aula 1:** 10 minutos com as peças físicas; 10 minutos para comparar translação, rotação e reflexão; 25 minutos em duplas nas missões 1 e 2, alternando quem explica e quem executa; 5 minutos para compartilhar instruções e baixar os registros.
 2. **Aula 2:** 10 minutos para retomar o centro de rotação e o eixo de reflexão; 20 minutos para as missões 3 e 4; 15 minutos para comparar área e perímetro de diferentes pentaminós; 5 minutos para registrar conclusões. Reserve o protótipo de peças em queda como extensão.
