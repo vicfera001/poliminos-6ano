@@ -26,26 +26,12 @@ Observe se o aluno especifica direção, sentido e quantidade; identifica o cent
 
 Caminhos equivalentes de translação são aceitos. As missões de rotação e reflexão restringem os comandos ao tipo investigado. O número de missões concluídas é cumulativo durante a sessão; reiniciar permite refazer uma missão sem apagar a conclusão anterior. O registro não é salvo automaticamente: baixe-o antes de fechar ou recarregar.
 
-## Publicar no GitHub Pages
-
-1. Entre em https://github.com/new com sua conta `vicfera001`.
-2. Crie um repositório público chamado `poliminos-6ano`, inicializando com um README.
-3. Na página do repositório, escolha **Add file → Upload files**. Envie o conteúdo desta pasta, colocando `index.html` na raiz, e confirme o commit. Não envie o DOCX da aula nem registros dos estudantes.
-4. Em **Settings → Pages → Build and deployment**, selecione **Deploy from a branch**.
-5. Escolha a branch `main`, pasta `/(root)`, e salve.
-6. Aguarde a publicação e abra o endereço exibido em Pages. Se usar o nome sugerido, o endereço esperado é `https://vicfera001.github.io/poliminos-6ano/`.
-7. Teste o endereço publicado no Chromebook antes da aula. O endereço esperado não significa que o site já foi publicado.
-
-Referências oficiais: https://docs.github.com/en/pages/quickstart e https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
-
 ## Arquivos e manutenção
 
 - `index.html`: atividade guiada em português, com CSS e JavaScript incorporados.
 - `jogo-original.html`: HTML original fornecido, preservado para comparação e extensão; suas limitações constam em `REVISAO_PEDAGOGICA.md`.
 - `REVISAO_PEDAGOGICA.md`: diagnóstico pedagógico e técnico.
 - `verificar.cjs`: verificações de geometria e interface com Node.js e Playwright; executar `node verificar.cjs --math-only` para geometria ou `node verificar.cjs` para a interface em ambiente com Playwright/Chromium instalados. Não são necessários para jogar.
-
-O pacote não inclui as imagens do material impresso nem escolhe uma licença de redistribuição para o professor.
 
 ## Validação nesta entrega
 
